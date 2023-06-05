@@ -9,6 +9,7 @@ tqdm = "*"
 pandas = "*"
 matplotlib = "*"
 keras = "*"
+jupyter = "*"
 
 [dev-packages]
 
