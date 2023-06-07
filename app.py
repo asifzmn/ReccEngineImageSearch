@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from image_search_module import get_similar_images
+from image_search_module import get_similar_images_using_model
 
 app = Flask(__name__)
 CORS(app)
@@ -41,7 +41,9 @@ def upload():
 
     filename = 'newplot.png'
     file.save(filename)
-    image_list = get_similar_images(filename)
+    file.close()
+
+    image_list = get_similar_images_using_model(filename)
     image_list = {i + 1: v for i, v in zip(range(len(image_list)), image_list.values())}
 
     # image_list = {1: 'Image/boots_1.jpg', 2: 'Image/boots_3.jpg', 3: 'Image/chelsea_4.jpg', 4: 'Image/chelsea_3.jpg', 5: 'Image/chelsea_2.png'}

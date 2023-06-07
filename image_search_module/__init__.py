@@ -10,6 +10,8 @@ from tqdm import tqdm
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input
 from tensorflow.keras.models import Model
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -41,13 +43,17 @@ class LoadData:
 class FeatureExtractor:
     def __init__(self):
         # Use VGG-16 as the architecture and ImageNet for the weight
-        base_model = VGG16(weights='imagenet')
+        # base_model = VGG16(weights='imagenet')
+        # base_model = ResNet50(weights='imagenet')
+        base_model = InceptionV3(weights='imagenet')
         # Customize the model to return features from fully-connected layer
-        self.model = Model(inputs=base_model.input, outputs=base_model.get_layer('fc1').output)
+        # self.model = Model(inputs=base_model.input, outputs=base_model.get_layer('fc1').output)
+        self.model = Model(inputs=base_model.input, outputs=base_model.get_layer('predictions').output)
 
     def extract(self, img):
         # Resize the image
-        img = img.resize((224, 224))
+        # img = img.resize((224, 224))
+        img = img.resize((299, 299))
         # Convert the image color space
         img = img.convert('RGB')
         # Reformat the image
@@ -169,7 +175,11 @@ def indexing():
 
 def query_and_visualize():
     # for searching you need to give the image path and the number of similar image you want
-    image_list = SearchImage().get_similar_images("Image/rs4_1.jpg", 5)
+    # image_list = SearchImage().get_similar_images("Image/rs4_1.jpg", 5)
+    # image_list = SearchImage().get_similar_images("Image_medium_sample/0a819392.jpg", 5)
+    # image_list = SearchImage().get_similar_images("/home/asif/Desktop/Image Test-Kaushik/Test Image- Kaushik/PXL_20230606_054115649.jpg", 5)
+    image_list = SearchImage().get_similar_images("/home/asif/Desktop/Image Test-Kaushik/Test Image Asif/20230606_114904.jpg", 5)
+    # image_list = SearchImage().get_similar_images("/home/asif/Pictures/Screenshot from 2023-06-06 12-29-28.png", 5)
 
     import matplotlib.pyplot as plt
     import matplotlib.image as mpimg
@@ -181,11 +191,11 @@ def query_and_visualize():
         plt.show()
 
 
-def get_similar_images(filename):
+def get_similar_images_using_model(filename):
     image_list = SearchImage().get_similar_images(filename, 5)
     return image_list
 
 
 if __name__ == '__main__':
-   indexing()
-   # query_and_visualize()
+   # indexing()
+   query_and_visualize()
